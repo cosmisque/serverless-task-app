@@ -104,12 +104,15 @@ export const updateTaskByTaskId = asyncHandler(async (event, context) => {
       taskId,
     }),
     UpdateExpression:
-      "SET name = :name, description = :description, userId = :userId",
+      "SET #taskName = :taskName, description = :description, userId = :userId",
     ExpressionAttributeValues: marshall({
-      ":name": name,
+      ":taskName": name,
       ":description": description,
       ":userId": userId,
     }),
+    ExpressionAttributeNames: {
+      "#taskName": "name",
+    },
     ReturnValues: "ALL_NEW",
   };
 
@@ -117,7 +120,7 @@ export const updateTaskByTaskId = asyncHandler(async (event, context) => {
 
   return {
     statusCode: 200,
-    body: JSON.stringify(updatedTask.Attributes),
+    body: JSON.stringify(unmarshall(updatedTask.Attributes)),
     headers: {
       "Access-Control-Allow-Origin": process.env.PROD_URL,
     },
