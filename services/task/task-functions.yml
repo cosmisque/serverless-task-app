@@ -1,0 +1,35 @@
+createTask:
+  handler: services/task/taskHandler.createTask
+  events:
+    - http:
+        method: POST
+        path: /api/v1/task
+        cors:
+          - ${file(services/cors/cors.yml)}
+
+getTasksForUser:
+  handler: services/task/taskHandler.getTasks
+  events:
+    - http:
+        method: GET
+        path: /api/v1/task/user/{userId}
+        cors:
+          - ${file(services/cors/cors.yml)}
+
+updateTask:
+  handler: services/task/taskHandler.updateTaskByTaskId
+  events:
+    - http:
+        method: PUT
+        path: /api/v1/task/{taskId}
+        cors:
+          - ${file(services/cors/cors.yml)}
+
+deleteTask:
+  handler: services/task/taskHandler.deleteTaskByTaskId
+  events:
+    - http:
+        method: DELETE
+        path: /api/v1/task/{taskId}
+        cors:
+          - ${file(services/cors/cors.yml)}

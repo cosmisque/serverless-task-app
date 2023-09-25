@@ -1,0 +1,61 @@
+service: aws-node-project
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: ap-southeast-1
+  stage: ${opt:stage, 'dev'}
+  environment:
+    USER_TABLE: Users
+    TASK_TABLE: Tasks
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:*"
+      Resource:
+        - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USER_TABLE}"
+        - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TASK_TABLE}"
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:Query"
+      Resource:
+        - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TASK_TABLE}/index/userIdIndex"
+
+plugins:
+  - serverless-dynamodb
+  - serverless-webpack
+  - serverless-offline
+
+package:
+  individually: true
+
+custom:
+  serverless-dynamodb:
+    stages:
+      - dev
+    start:
+      docker: true
+      port: 8000
+      inMemory: true
+      migrate: true
+    migration:
+      dir: offline/migrations
+
+    serverless-offline:
+      httpsProtocol: "dev-certs"
+      httpPort: 4000
+
+    # Uncomment only if you already have a DynamoDB running locally
+    # noStart: true
+
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true # enable auto-packing of external
+functions:
+  - ${file(./services/user/user-functions.yml)}
+  - ${file(./services/task/task-functions.yml)}
+
+resources:
+  - ${file(./services/user/user-resources.yml)}
+  - ${file(./services/task/task-resources.yml)}
