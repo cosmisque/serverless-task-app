@@ -2,6 +2,7 @@ version: "3"
 
 volumes:
   dynamodb_data:
+    driver: local
 
 services:
   dynamodb:
@@ -11,3 +12,4 @@ services:
       - dynamodb_data:/home/dynamodblocal
     ports:
       - "8000:8000"
+    user: "root"
