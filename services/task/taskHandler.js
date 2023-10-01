@@ -127,6 +127,7 @@ export const updateTaskByTaskId = asyncHandler(async (event, context) => {
       "SET #taskName = :taskName, description = :description, userId = :userId, #statusName = :status",
     ExpressionAttributeValues: marshall({
       ":taskName": name,
+      ":taskName": name,
       ":description": description,
       ":userId": userId,
       ":status": status,
