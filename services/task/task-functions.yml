@@ -16,6 +16,15 @@ getTasksForUser:
         cors:
           - ${file(services/cors/cors.yml)}
 
+getTaskById:
+  handler: services/task/taskHandler.getTaskById
+  events:
+    - http:
+        method: GET
+        path: /api/v1/task/{taskId}
+        cors:
+          - ${file(services/cors/cors.yml)}
+
 updateTask:
   handler: services/task/taskHandler.updateTaskByTaskId
   events:

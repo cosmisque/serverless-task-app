@@ -94,9 +94,29 @@ export const getTasks = asyncHandler(async (event, context) => {
   };
 });
 
+export const getTaskById = asyncHandler(async (event, context) => {
+  const { taskId } = event.pathParameters;
+  console.log(taskId);
+  const params = {
+    TableName: process.env.TASK_TABLE,
+    Key: marshall({
+      taskId,
+    }),
+  };
+
+  const task = await dynamodb.getItem(params).promise();
+  return {
+    statusCode: 200,
+    body: JSON.stringify(unmarshall(task.Item)),
+    headers: {
+      "Access-Control-Allow-Origin": process.env.PROD_URL,
+    },
+  };
+});
+
 export const updateTaskByTaskId = asyncHandler(async (event, context) => {
   const { taskId } = event.pathParameters;
-  const { userId, name, description } = JSON.parse(event.body);
+  const { userId, name, description, status } = JSON.parse(event.body);
 
   const updateParams = {
     TableName: process.env.TASK_TABLE,
@@ -104,12 +124,17 @@ export const updateTaskByTaskId = asyncHandler(async (event, context) => {
       taskId,
     }),
     UpdateExpression:
-      "SET name = :name, description = :description, userId = :userId",
+      "SET #taskName = :taskName, description = :description, userId = :userId, #statusName = :status",
     ExpressionAttributeValues: marshall({
-      ":name": name,
+      ":taskName": name,
       ":description": description,
       ":userId": userId,
+      ":status": status,
     }),
+    ExpressionAttributeNames: {
+      "#taskName": "name",
+      "#statusName": "status",
+    },
     ReturnValues: "ALL_NEW",
   };
 
@@ -117,7 +142,7 @@ export const updateTaskByTaskId = asyncHandler(async (event, context) => {
 
   return {
     statusCode: 200,
-    body: JSON.stringify(updatedTask.Attributes),
+    body: JSON.stringify(unmarshall(updatedTask.Attributes)),
     headers: {
       "Access-Control-Allow-Origin": process.env.PROD_URL,
     },
