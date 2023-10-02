@@ -150,7 +150,7 @@ export const updateTaskByTaskId = asyncHandler(async (event, context) => {
   };
 });
 
-export const deleteTaskBytaskId = asyncHandler(async (event, context) => {
+export const deleteTaskByTaskId = asyncHandler(async (event, context) => {
   const { taskId } = event.pathParameters;
   const deleteParams = {
     TableName: process.env.TASK_TABLE,
