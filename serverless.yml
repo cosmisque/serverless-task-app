@@ -1,6 +1,6 @@
 service: aws-node-project
 frameworkVersion: "3"
-
+useDotenv: true
 provider:
   name: aws
   runtime: nodejs18.x
@@ -21,6 +21,13 @@ provider:
         - "dynamodb:Query"
       Resource:
         - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TASK_TABLE}/index/userIdIndex"
+    - Effect: "Allow"
+      Action:
+        - cognito-idp:ListUserPoolClients
+        - cognito-idp:ListUserPools
+        - cognito-idp:ListUsers
+      Resource:
+        - arn:aws:cognito-idp:${self:provider.region}:${env:IAM}:userpool/${env:COGNITO_USER_POOLS}
 
 plugins:
   - serverless-dynamodb

@@ -5,4 +5,5 @@ headers:
   - Authorization
   - X-Api-Key
   - X-Amz-Security-Token
-allowCredentials: false
+  - X-Amz-User-Agent
+allowCredentials: true

@@ -2,20 +2,21 @@ import { v4 as uuidv4 } from "uuid";
 import { unmarshall, marshall } from "@aws-sdk/util-dynamodb";
 import { asyncHandler } from "../../shared/asyncHandler.js";
 import { dynamodb } from "../../shared/dynamodb.js";
+import AWS from "aws-sdk";
+const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 
 export const createTask = asyncHandler(async (event, context) => {
   const { userId, name, description, status } = JSON.parse(event.body);
+  const identities = await cognitoidentityserviceprovider
+    .listUsers({
+      UserPoolId: process.env.COGNITO_USER_POOLS,
+    })
+    .promise();
+  const usernameExists = identities.Users.some(
+    (user) => user.Username === userId
+  );
 
-  const userCheckParams = {
-    TableName: "Users",
-    Key: marshall({
-      userId,
-    }),
-  };
-
-  const userExist = await dynamodb.getItem(userCheckParams).promise();
-
-  if (!userExist.Item) {
+  if (!usernameExists) {
     return {
       statusCode: 404,
       body: JSON.stringify({ error: "User not found" }),

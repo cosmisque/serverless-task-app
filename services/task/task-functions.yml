@@ -5,7 +5,10 @@ createTask:
         method: POST
         path: /api/v1/task
         cors:
-          - ${file(services/cors/cors.yml)}
+          - ${file(services/config/cors.yml)}
+        authorizer:
+          type: COGNITO_USER_POOLS
+          arn: arn:aws:cognito-idp:${self:provider.region}:${env:IAM}:userpool/${env:COGNITO_USER_POOLS}
 
 getTasksForUser:
   handler: services/task/taskHandler.getTasks
@@ -14,7 +17,10 @@ getTasksForUser:
         method: GET
         path: /api/v1/task/user/{userId}
         cors:
-          - ${file(services/cors/cors.yml)}
+          - ${file(services/config/cors.yml)}
+        authorizer:
+          type: COGNITO_USER_POOLS
+          arn: arn:aws:cognito-idp:${self:provider.region}:${env:IAM}:userpool/${env:COGNITO_USER_POOLS}
 
 getTaskById:
   handler: services/task/taskHandler.getTaskById
@@ -23,7 +29,10 @@ getTaskById:
         method: GET
         path: /api/v1/task/{taskId}
         cors:
-          - ${file(services/cors/cors.yml)}
+          - ${file(services/config/cors.yml)}
+        authorizer:
+          type: COGNITO_USER_POOLS
+          arn: arn:aws:cognito-idp:${self:provider.region}:${env:IAM}:userpool/${env:COGNITO_USER_POOLS}
 
 updateTask:
   handler: services/task/taskHandler.updateTaskByTaskId
@@ -32,7 +41,10 @@ updateTask:
         method: PUT
         path: /api/v1/task/{taskId}
         cors:
-          - ${file(services/cors/cors.yml)}
+          - ${file(services/config/cors.yml)}
+        authorizer:
+          type: COGNITO_USER_POOLS
+          arn: arn:aws:cognito-idp:${self:provider.region}:${env:IAM}:userpool/${env:COGNITO_USER_POOLS}
 
 deleteTask:
   handler: services/task/taskHandler.deleteTaskByTaskId
@@ -41,4 +53,7 @@ deleteTask:
         method: DELETE
         path: /api/v1/task/{taskId}
         cors:
-          - ${file(services/cors/cors.yml)}
+          - ${file(services/config/cors.yml)}
+        authorizer:
+          type: COGNITO_USER_POOLS
+          arn: arn:aws:cognito-idp:${self:provider.region}:${env:IAM}:userpool/${env:COGNITO_USER_POOLS}

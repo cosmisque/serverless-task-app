@@ -5,4 +5,4 @@ addUser:
         method: POST
         path: /api/v1/user
         cors:
-          - ${file(services/cors/cors.yml)}
+          - ${file(services/config/cors.yml)}
