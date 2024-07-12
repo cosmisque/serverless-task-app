@@ -6,9 +6,9 @@ createTask:
         path: /api/v1/task
         cors:
           - ${file(services/config/cors.yml)}
-        authorizer:
-          type: COGNITO_USER_POOLS
-          arn: arn:aws:cognito-idp:${self:provider.region}:${env:IAM}:userpool/${env:COGNITO_USER_POOLS}
+        # authorizer:
+        #   type: COGNITO_USER_POOLS
+        #   arn: arn:aws:cognito-idp:${self:provider.region}:${env:IAM}:userpool/${env:COGNITO_USER_POOLS}
 
 getTasksForUser:
   handler: services/task/taskHandler.getTasks
@@ -18,9 +18,9 @@ getTasksForUser:
         path: /api/v1/task/user/{userId}
         cors:
           - ${file(services/config/cors.yml)}
-        authorizer:
-          type: COGNITO_USER_POOLS
-          arn: arn:aws:cognito-idp:${self:provider.region}:${env:IAM}:userpool/${env:COGNITO_USER_POOLS}
+        # authorizer:
+        #   type: COGNITO_USER_POOLS
+        #   arn: arn:aws:cognito-idp:${self:provider.region}:${env:IAM}:userpool/${env:COGNITO_USER_POOLS}
 
 getTaskById:
   handler: services/task/taskHandler.getTaskById
@@ -30,9 +30,9 @@ getTaskById:
         path: /api/v1/task/{taskId}
         cors:
           - ${file(services/config/cors.yml)}
-        authorizer:
-          type: COGNITO_USER_POOLS
-          arn: arn:aws:cognito-idp:${self:provider.region}:${env:IAM}:userpool/${env:COGNITO_USER_POOLS}
+        # authorizer:
+        #   type: COGNITO_USER_POOLS
+        #   arn: arn:aws:cognito-idp:${self:provider.region}:${env:IAM}:userpool/${env:COGNITO_USER_POOLS}
 
 updateTask:
   handler: services/task/taskHandler.updateTaskByTaskId
@@ -42,9 +42,9 @@ updateTask:
         path: /api/v1/task/{taskId}
         cors:
           - ${file(services/config/cors.yml)}
-        authorizer:
-          type: COGNITO_USER_POOLS
-          arn: arn:aws:cognito-idp:${self:provider.region}:${env:IAM}:userpool/${env:COGNITO_USER_POOLS}
+        # authorizer:
+        #   type: COGNITO_USER_POOLS
+        #   arn: arn:aws:cognito-idp:${self:provider.region}:${env:IAM}:userpool/${env:COGNITO_USER_POOLS}
 
 deleteTask:
   handler: services/task/taskHandler.deleteTaskByTaskId
@@ -54,6 +54,6 @@ deleteTask:
         path: /api/v1/task/{taskId}
         cors:
           - ${file(services/config/cors.yml)}
-        authorizer:
-          type: COGNITO_USER_POOLS
-          arn: arn:aws:cognito-idp:${self:provider.region}:${env:IAM}:userpool/${env:COGNITO_USER_POOLS}
+        # authorizer:
+        #   type: COGNITO_USER_POOLS
+        #   arn: arn:aws:cognito-idp:${self:provider.region}:${env:IAM}:userpool/${env:COGNITO_USER_POOLS}

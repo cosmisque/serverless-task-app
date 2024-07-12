@@ -1,5 +1,5 @@
-service: aws-node-project
-frameworkVersion: "3"
+service: kanban
+frameworkVersion: "4.1.12"
 useDotenv: true
 provider:
   name: aws
@@ -21,21 +21,22 @@ provider:
         - "dynamodb:Query"
       Resource:
         - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TASK_TABLE}/index/userIdIndex"
-    - Effect: "Allow"
-      Action:
-        - cognito-idp:ListUserPoolClients
-        - cognito-idp:ListUserPools
-        - cognito-idp:ListUsers
-      Resource:
-        - arn:aws:cognito-idp:${self:provider.region}:${env:IAM}:userpool/${env:COGNITO_USER_POOLS}
+    # - Effect: "Allow"
+    #   Action:
+    #     - cognito-idp:ListUserPoolClients
+    #     - cognito-idp:ListUserPools
+    #     - cognito-idp:ListUsers
+    #   Resource:
+    #     - arn:aws:cognito-idp:${self:provider.region}:${env:IAM}:userpool/${env:COGNITO_USER_POOLS}
 
 plugins:
   - serverless-dynamodb
-  - serverless-webpack
+  # - serverless-webpack
   - serverless-offline
 
 package:
-  individually: true
+    exclude:
+    - node_modules/**
 
 custom:
   serverless-dynamodb:
