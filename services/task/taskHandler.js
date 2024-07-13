@@ -2,28 +2,28 @@ import { v4 as uuidv4 } from "uuid";
 import { unmarshall, marshall } from "@aws-sdk/util-dynamodb";
 import { asyncHandler } from "../../shared/asyncHandler.js";
 import { dynamodb } from "../../shared/dynamodb.js";
-import AWS from "aws-sdk";
-const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
+import { QueryCommand, DeleteItemCommand, GetItemCommand,UpdateItemCommand, PutItemCommand } from "@aws-sdk/client-dynamodb";
 
 export const createTask = asyncHandler(async (event, context) => {
   const { userId, name, description, status } = JSON.parse(event.body);
-  const identities = await cognitoidentityserviceprovider
-    .listUsers({
-      UserPoolId: process.env.COGNITO_USER_POOLS,
-    })
-    .promise();
-  const usernameExists = identities.Users.some(
-    (user) => user.Username === userId
-  );
 
-  if (!usernameExists) {
-    return {
-      statusCode: 404,
-      body: JSON.stringify({ error: "User not found" }),
-    };
-  }
+  // const userCheckParams = {
+  //   TableName: "Users",
+  //   Key: marshall({
+  //     userId,
+  //   }),
+  // };
 
-  const now = new Date().toISOString();
+  // const command = new GetItemCommand(userCheckParams);
+  // const userExist = await dynamodb.send(command);
+
+  // if (!userExist.Item) {
+  //   return {
+  //     statusCode: 404,
+  //     body: JSON.stringify({ error: "User not found" }),
+  //   };
+  // }
+
 
   const params = {
     TableName: "Tasks",
@@ -33,23 +33,24 @@ export const createTask = asyncHandler(async (event, context) => {
       name: name,
       description: description,
       status: status,
-      createDate: now,
+      createDate: new Date().toISOString(),
     }),
   };
 
-  await dynamodb.putItem(params).promise();
+  const result = await dynamodb.send(new PutItemCommand(params));
 
   return {
     statusCode: 200,
     headers: {
-      "Access-Control-Allow-Origin": process.env.PROD_URL,
+      "Access-Control-Allow-Origin": "*",
     },
     body: JSON.stringify({ message: "Task created successfully!" }),
   };
 });
 
-//GET /api/v1/task/{userId}?date=2023-08-15
-//GET /api/v1/task/{userId}
+
+// //GET /api/v1/task/{userId}?date=2023-08-15
+// //GET /api/v1/task/{userId}
 export const getTasks = asyncHandler(async (event, context) => {
   const { userId } = event.pathParameters;
   const { date } = event.queryStringParameters || {};
@@ -68,7 +69,8 @@ export const getTasks = asyncHandler(async (event, context) => {
     params.ExpressionAttributeValues[":date"] = marshall({ date });
   }
 
-  const result = await dynamodb.query(params).promise();
+  const command = new QueryCommand(params);
+  const result = await dynamodb.send(command);
 
   const items = result.Items.map((item) => {
     return unmarshall(item);
@@ -90,14 +92,13 @@ export const getTasks = asyncHandler(async (event, context) => {
     statusCode: 200,
     body: JSON.stringify(groupedTasks),
     headers: {
-      "Access-Control-Allow-Origin": process.env.PROD_URL,
+      "Access-Control-Allow-Origin": '*',
     },
   };
 });
 
 export const getTaskById = asyncHandler(async (event, context) => {
   const { taskId } = event.pathParameters;
-  console.log(taskId);
   const params = {
     TableName: process.env.TASK_TABLE,
     Key: marshall({
@@ -105,12 +106,14 @@ export const getTaskById = asyncHandler(async (event, context) => {
     }),
   };
 
-  const task = await dynamodb.getItem(params).promise();
+  const command = new GetItemCommand(params);
+  const task = await dynamodb.send(command);
+
   return {
     statusCode: 200,
     body: JSON.stringify(unmarshall(task.Item)),
     headers: {
-      "Access-Control-Allow-Origin": process.env.PROD_URL,
+      "Access-Control-Allow-Origin": '*',
     },
   };
 });
@@ -140,13 +143,15 @@ export const updateTaskByTaskId = asyncHandler(async (event, context) => {
     ReturnValues: "ALL_NEW",
   };
 
-  const updatedTask = await dynamodb.updateItem(updateParams).promise();
+  
+  const command = new UpdateItemCommand(updateParams);
+  const updatedTask = await dynamodb.send(command);
 
   return {
     statusCode: 200,
     body: JSON.stringify(unmarshall(updatedTask.Attributes)),
     headers: {
-      "Access-Control-Allow-Origin": process.env.PROD_URL,
+      "Access-Control-Allow-Origin": '*',
     },
   };
 });
@@ -160,13 +165,15 @@ export const deleteTaskByTaskId = asyncHandler(async (event, context) => {
     }),
   };
 
-  await dynamodb.deleteItem(deleteParams).promise();
+
+  const command = new DeleteItemCommand(deleteParams);
+  await dynamodb.send(command);
 
   return {
     statusCode: 200,
     body: JSON.stringify({ message: "Task deleted successfully" }),
     headers: {
-      "Access-Control-Allow-Origin": process.env.PROD_URL,
+      "Access-Control-Allow-Origin": '*',
     },
   };
 });

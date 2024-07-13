@@ -17,7 +17,7 @@ export const addUser = asyncHandler(async (event, context) => {
   return {
     body: JSON.stringify({ userId }),
     headers: {
-      "Access-Control-Allow-Origin": process.env.PROD_URL,
+      "Access-Control-Allow-Origin": '*',
     },
   };
 });
