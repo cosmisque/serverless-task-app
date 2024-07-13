@@ -6,6 +6,9 @@ createTask:
         path: /api/v1/task
         cors:
           - ${file(services/config/cors.yml)}
+        throttling:
+            maxRequestsPerSecond: 5
+            maxConcurrentRequests: 5
         # authorizer:
         #   type: COGNITO_USER_POOLS
         #   arn: arn:aws:cognito-idp:${self:provider.region}:${env:IAM}:userpool/${env:COGNITO_USER_POOLS}
@@ -18,6 +21,9 @@ getTasksForUser:
         path: /api/v1/task/user/{userId}
         cors:
           - ${file(services/config/cors.yml)}
+        throttling:
+            maxRequestsPerSecond: 5
+            maxConcurrentRequests: 5
         # authorizer:
         #   type: COGNITO_USER_POOLS
         #   arn: arn:aws:cognito-idp:${self:provider.region}:${env:IAM}:userpool/${env:COGNITO_USER_POOLS}
@@ -30,6 +36,9 @@ getTaskById:
         path: /api/v1/task/{taskId}
         cors:
           - ${file(services/config/cors.yml)}
+        throttling:
+            maxRequestsPerSecond: 5
+            maxConcurrentRequests: 5
         # authorizer:
         #   type: COGNITO_USER_POOLS
         #   arn: arn:aws:cognito-idp:${self:provider.region}:${env:IAM}:userpool/${env:COGNITO_USER_POOLS}
@@ -42,6 +51,9 @@ updateTask:
         path: /api/v1/task/{taskId}
         cors:
           - ${file(services/config/cors.yml)}
+        throttling:
+            maxRequestsPerSecond: 5
+            maxConcurrentRequests: 5
         # authorizer:
         #   type: COGNITO_USER_POOLS
         #   arn: arn:aws:cognito-idp:${self:provider.region}:${env:IAM}:userpool/${env:COGNITO_USER_POOLS}
@@ -54,6 +66,9 @@ deleteTask:
         path: /api/v1/task/{taskId}
         cors:
           - ${file(services/config/cors.yml)}
+        throttling:
+            maxRequestsPerSecond: 5
+            maxConcurrentRequests: 5
         # authorizer:
         #   type: COGNITO_USER_POOLS
         #   arn: arn:aws:cognito-idp:${self:provider.region}:${env:IAM}:userpool/${env:COGNITO_USER_POOLS}
